@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lynx bus arrival prediction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ec008c">
+
+<meta property="og:title" content="Lynx bus arrival" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://bus.chad.org/" />
+<meta property="og:description" content="When is the bus going to arrive?" />
+<meta name="description" content="When is the bus going to arrive?">
+
+<script src="jquery-2.1.4.min.js"></script>
+<script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.en"></script>
+<script src="maintain_table.js"></script>
+<style type="text/css">
+html, body { padding: 2%; font-family: sans-serif; }
+#error { color: #c00; }
+ol#stop-info { list-style: none; padding: 0; margin; 2ex 0 6ex 0; }
+ol#stop-info li { font-size: 140%; vertical-align: middle; border-bottom: 3px solid; padding-top: 2ex; }
+ol#stop-info li time:before { content: "@"; color: 999; }
+ol#stop-info li time { padding-right: 2vw; }
+ol#stop-info li time.delayed { color: #c00; }
+span.route-id { padding: 0 0.8ex; border-right: 4px solid; margin: 0 0.7ex; font-weight: bold; }
+span.route-direction { margin: 0 0.7ex; font-weight: bold; }
+span.route-direction-arrival-time { margin: 0 0.7ex; display: inline-block; }
+span.route-direction-arrival-time-delayed { color: #900; }
+ul#near-neighbors { padding-left: 10vw; }
+ul#near-neighbors li { padding: 0.7ex 0; }
+ul#near-neighbors li span.route-cell:first-child { margin-left: 2ex; }
+span.route-cell { border-bottom: 3px solid; display: inline-block; margin: 0 0.8ex; }
+p.caption, caption { font-size: 20pt; font-style: italic; text-align: center; padding: 3ex 0 1ex 0; margin: 0; }
+
+table#stop-neighbors { width: 100%; margin: 7ex 0; }
+@media (min-width: 700px) {
+	table#stop-neighbors { border-collapse: collapse; }
+	table#stop-neighbors tr { vertical-align: middle; font-size: smaller; border-bottom: 3px solid; }
+	table#stop-neighbors tr th { font-size: 200%; vertical-align: bottom; }
+	table#stop-neighbors tr th:after { content: ":"; }
+	table#stop-neighbors tr td { padding: 5ex 1vw 0 1vw; }
+	table#stop-neighbors tr th:first-child { text-align: right; }
+	table#stop-neighbors tr td:nth-child(1) { text-align: right; }
+	table#stop-neighbors tr td:nth-child(4) { text-align: center; }
+
+}
+@media (max-width: 700px) {
+	table#stop-neighbors { border-collapse: separate; border-spacing: 2ex 0; }
+	table#stop-neighbors tr { padding: 2ex 0; outline: solid #ddd 1px; }
+	table#stop-neighbors tr th { margin: 1ex 0; border-color: inherit; text-align: right; padding: 2ex 0; height: 4ex; }
+	table#stop-neighbors tr th span { border-right: 3px solid; margin: 1ex 0; border-color: inherit; text-align: right; padding: 3ex; padding-right: 1ex; }
+	table#stop-neighbors tr td { display: table-row; margin: 0.9ex 2ex; }
+	table#stop-neighbors tr td:nth-child(3), table#stop-neighbors tr td:nth-child(5) { font-weight: bolder; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<p id="error"></p>
+
+<h1 id="stop-title"></h1>
+
+<p><a href="/map">See the map</a> to get more information.</p>
+
+<ol id="stop-info">
+</ol>
+
+<table id="stop-neighbors">
+<caption>neighboring stops along lines</caption>
+</table>
+
+<p class="caption">close stops by proximity</p>
+<ul id="near-neighbors">
+</ul>
+
+</body>
+</html>

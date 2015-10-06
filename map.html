@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lynx bus arrival prediction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ec008c">
+
+<meta property="og:title" content="Lynx bus arrival" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://bus.chad.org/" />
+<meta property="og:description" content="When is the bus going to arrive?" />
+<meta name="description" content="When is the bus going to arrive?">
+
+<script src="jquery-2.1.4.min.js"></script>
+<script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.en"></script>
+<script>
+var map;
+var started = false;
+var initialize_markers = false;
+</script>
+<script src="maintain_map.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=visualization"></script>
+<style type="text/css">
+html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; }
+#map { height: 100%; }
+ul { list-style: none; padding: 0; }
+span.route-id { padding: 0 0.8ex; border-right: 4px solid; margin: 0 0.7ex; font-weight: bold; }
+span.route-direction { margin: 0 0.7ex; font-weight: bold; }
+span.route-direction-arrival-time { margin: 0 0.7ex; display: inline-block; }
+span.route-direction-arrival-time-delayed { color: #900; }
+</style>
+<script>
+function initialize_map() {
+
+	var MY_MAPTYPE_ID = 'bus-centric';
+
+	var bus_centric = [
+		{
+			"featureType": "all",
+			"elementType": "geometry.fill",
+			"stylers": [ { "saturation": "-20" } ]
+		},
+		{
+			"featureType": "administrative",
+			"elementType": "labels.text.fill",
+			"stylers": [ { "color": "#444444" } ]
+		},
+		{
+			"featureType": "landscape",
+			"elementType": "all",
+			"stylers": [ { "color": "#f2f2f2" } ]
+		},
+		{
+			"featureType": "poi",
+			"elementType": "all",
+			"stylers": [ { "visibility": "on" } ]
+		},
+		{
+			"featureType": "road",
+			"elementType": "all",
+			"stylers": [ { "saturation": 0 }, { "lightness": 0 } ]
+		},
+		{
+			"featureType": "road.highway",
+			"elementType": "all",
+			"stylers": [ { "visibility": "simplified" }, { "saturation": -90 }, { "lightness": 80} ]
+		},
+		{
+			"featureType": "road.arterial",
+			"elementType": "labels.icon",
+			"stylers": [ { "visibility": "simplified" },  ]
+		},
+		{
+			"featureType": "transit",
+			"elementType": "all",
+			"stylers": [ { "visibility": "on" } ]
+		},
+		{
+			"featureType": "transit.station.bus",
+			"elementType": "all",
+			"stylers": [ { "visibility": "on" } ]
+		},
+		{
+			"featureType": "water",
+			"elementType": "all",
+			"stylers": [ { "lightness": "30" }, { "visibility": "on" } ]
+		}
+	]
+
+	var mapOptions = {
+		mapTypeControlOptions: {
+			mapTypeIds: [MY_MAPTYPE_ID]
+		},
+		mapTypeId: MY_MAPTYPE_ID,
+		scaleControl: true,
+		center: {lat: 28.5415, lng: -81.38},
+		zoom: 16,
+		maxZoom: 17,
+		minZoom: 13,
+	};
+
+		//minZoom: 17,
+
+	map = new google.maps.Map(document.getElementById('map'), mapOptions);
+	var customMapType = new google.maps.StyledMapType(bus_centric);
+	map.mapTypes.set(MY_MAPTYPE_ID, customMapType);
+
+
+	navigator.geolocation.getCurrentPosition(function (loc) {
+		if ((! loc.coords) || (! loc.coords.latitude)) { return; }
+		if ((loc.coords.latitude < 28.3) || (loc.coords.latitude > 28.7)) { return; }
+		if ((loc.coords.longitude > -81.4) || (loc.coords.longitude < -81.7)) { return; }
+		if ((loc.coords.latitude < 28.1) || (loc.coords.latitude > 28.9)) { return; }
+		if ((loc.coords.longitude > -81.1) || (loc.coords.longitude < -81.9)) { return; }
+		map.setCenter({"lat":loc.coords.latitude, "lng":loc.coords.longitude});
+	});
+
+	if (! started && initialize_markers) {
+		started = true;
+		initialize_markers(map);
+	}
+}
+
+google.maps.event.addDomListener(window, 'load', initialize_map);
+</script>
+<style>p#top, p#top a, p#top a:visited { color: black; text-align: right; } p#top span#error { display: none; padding: 0 3em; color: #c00;  font-style: italic; } p#top span.credit { display: none; } p#top:hover span.credit { display: inline; }</style>
+</head>
+<body>
+<p id="top" style="font-size: smaller; position: absolute; right: 0.4ex; top: 0.4ex; padding: 1ex; margin: 0; z-index: 100; background: hsla(323, 75%, 85%, 0.7);"><span id="error"></span>How long do you have to wait for the next <a href="http://www.golynx.com/news-events/videos.stml?playlistid=PL2CFB28CF7F475284">Lynx</a> bus?<span class="credit"><br>A project of <a href="http://web.chad.org/">Chad Miller</a> and <a href="http://cforlando.github.io/">Code for America, Orlando Brigade</a>.</span></p>
+<div id="map"></div>
+</body>
+</html>
